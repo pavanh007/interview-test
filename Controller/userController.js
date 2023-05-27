@@ -1,7 +1,5 @@
 import User from "../Models/userModel.js";
 
-
-
 export const getCustomers = async (req, res) => {
   const { page = 1, limit = 10, first_name, last_name, city } = req.query;
   const query = {};
@@ -22,7 +20,7 @@ export const getCustomers = async (req, res) => {
       .limit(limit)
       .exec();
 
-    const totalCount = await Customer.countDocuments(query).exec();
+    const totalCount = await User.countDocuments(query).exec();
 
     res.json({
       page: parseInt(page),
@@ -36,10 +34,10 @@ export const getCustomers = async (req, res) => {
 };
 
 export const getCustomersById = async (req, res) => {
-  const customerId = req.params.id;
+  const userId = req.params.id;
 
   try {
-    const customer = await User.findById(customerId).exec();
+    const customer = await User.findById(userId).exec();
 
     if (!customer) {
       return res.status(404).json({ error: "Customer not found" });
@@ -75,15 +73,15 @@ export const createCustomers = async (req, res) => {
 
   try {
     // Check if city and company already exist
-    const existingCity = await Customer.findOne({ city }).exec();
-    const existingCompany = await Customer.findOne({ company }).exec();
+    const existingCity = await User.findOne({ city }).exec();
+    const existingCompany = await User.findOne({ company }).exec();
 
     if (!existingCity || !existingCompany) {
       return res.status(400).json({ error: "City or company does not exist" });
     }
 
     // Create the new customer
-    const newCustomer = new Customer({
+    const newCustomer = new User({
       first_name,
       last_name,
       city,

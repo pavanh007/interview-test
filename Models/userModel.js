@@ -10,9 +10,13 @@ const userSchema = new mongoose.Schema(
       default: uuidv4(),
       unique: true,
     },
-    name: {
+    first_name: {
       type: String,
-      required: [true, "User should have name"],
+      required: [true, "User should have first name"],
+    },
+    last_name: {
+      type: String,
+      required: [true, "User should have last name"],
     },
     gmail: {
       type: String,
@@ -36,6 +40,7 @@ const userSchema = new mongoose.Schema(
       enum: ["INACTIVE", "ACTIVE"],
       default: "ACTIVE",
       select: false,
+      required: true, 
     },
     company: {
       type: String,
@@ -56,13 +61,16 @@ export default User;
 
 export async function validateCreateUser(userData) {
   const schema = Joi.object({
-    name: Joi.string().min(3).required(),
+    first_name: Joi.string().min(3).required(),
+    last_name: Joi.string().min(3).required(),
     gmail: Joi.string().email({ tlds: { allow: false } }),
     mobileNo: Joi.string()
       .pattern(/^((\+91)?(\s|-)?)(\d{10})$/)
       .required(),
-    dateOfBirth: Joi.date().format("iso").raw(),
+    dateOfBirth: Joi.date().format("iso").raw().required(),
     active: Joi.string().valid("ACTIVE", "INACTIVE").required(),
+    company: Joi.string().required(),
+    city: Joi.string().required(),
   });
   try {
     return schema.validate(userData);
